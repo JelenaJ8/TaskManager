@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Task Manager</string>
+    <string name="novi_zadatak">Novi zadatak</string>
+    <string name="statistika">Statistika</string>
+    <string name="ime_zadatka">Ime zadatka</string>
+    <string name="opis_zadatka">Opis zadatka</string>
+    <string name="checkbox">Podseti me 15 minuta pre isteka</string>
+    <string name="crveno_dugme">Jako važno</string>
+    <string name="zuto_dugme">Važno</string>
+    <string name="zeleno_dugme">Manje važno</string>
+    <string name="dodaj_dugme">Dodaj</string>
+    <string name="otkazi_dugme">Otkaži</string>
+</resources>
