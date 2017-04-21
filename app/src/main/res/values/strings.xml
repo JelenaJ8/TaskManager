@@ -10,4 +10,15 @@
     <string name="zeleno_dugme">Manje važno</string>
     <string name="dodaj_dugme">Dodaj</string>
     <string name="otkazi_dugme">Otkaži</string>
+    <string name="sacuvaj_dugme">Sačuvaj</string>
+    <string name="obrisi_dugme">Obriši</string>
+    <string name="danas">Danas</string>
+    <string name="sutra">Sutra</string>
+    <string name="ponedeljak">Ponedeljak</string>
+    <string name="utorak">Utorak</string>
+    <string name="sreda">Sreda</string>
+    <string name="cetvrtak">Četvrtak</string>
+    <string name="petak">Petak</string>
+    <string name="subota">Subota</string>
+    <string name="nedelja">Nedelja</string>
 </resources>

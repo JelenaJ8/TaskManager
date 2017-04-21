@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rounded_edittext"
+    android:longClickable="true">
+
+    <TextView
+        android:layout_width="50sp"
+        android:layout_height="70sp"
+        android:id="@+id/prioritet"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/datum"
+        android:id="@+id/vreme"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/colorPrimary"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/datum"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/colorPrimary"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/vreme"
+        android:buttonTint="@color/colorPrimary"
+        android:id="@+id/boxZadatka"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="60sp"
+        android:id="@+id/nazivZadatka"
+        android:layout_toStartOf="@+id/radioButton"
+        android:gravity="center_vertical"
+        android:layout_toEndOf="@+id/prioritet"
+        android:textColor="@color/colorPrimary"/>
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioButton"
+        android:clickable="false"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/datum"
+        android:buttonTint="@color/colorPrimary"/>
+
+</RelativeLayout>

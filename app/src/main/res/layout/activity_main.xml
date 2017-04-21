@@ -23,6 +23,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/novi_zadatak"
+            android:textAllCaps="false"
             android:id="@+id/b1"
             android:textColor="@color/colorPrimary"/>
 
@@ -30,6 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textAllCaps="false"
             android:text="@string/statistika"
             android:id="@+id/b2"
             android:textColor="@color/colorPrimary"/>
@@ -41,7 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_above="@id/l1"
-        android:id="@+id/lista">
+        android:id="@+id/lista"
+        tools:listitem="@layout/task_element">
     </ListView>
 
 

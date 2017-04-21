@@ -68,7 +68,8 @@
                 android:clickable="true"
                 android:text="@string/checkbox"
                 android:buttonTint="@color/colorPrimary"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:id="@+id/box"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -114,6 +115,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/dodaj_dugme"
+                    android:textAllCaps="false"
                     android:id="@+id/b4"
                     android:textColor="@color/colorPrimary"/>
 
@@ -122,6 +124,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/otkazi_dugme"
+                    android:textAllCaps="false"
                     android:id="@+id/b5"
                     android:textColor="@color/colorPrimary"/>
 
