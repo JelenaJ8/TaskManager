@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         statistika.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(in2);
+                startActivityForResult(in2, 1);
             }
         });
     }

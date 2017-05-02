@@ -21,4 +21,8 @@
     <string name="petak">Petak</string>
     <string name="subota">Subota</string>
     <string name="nedelja">Nedelja</string>
+    <string name="nazad">Nazad</string>
+    <string name="visoki_prioritet">Zadaci visokog prioriteta</string>
+    <string name="srednji_prioritet">Zadaci srednjeg prioriteta</string>
+    <string name="niski_prioritet">Zadaci niskog prioriteta</string>
 </resources>

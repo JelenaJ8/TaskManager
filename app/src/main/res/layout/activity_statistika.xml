@@ -11,4 +11,27 @@
     tools:context="gravedigger.example.ra127_2014.com.taskmanager.Statistika"
     android:background="@color/colorTirkiz">
 
+    <gravedigger.example.ra127_2014.com.taskmanager.CustomView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linear"
+        android:layout_alignParentTop="true"
+        android:id="@+id/cv" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:id="@+id/linear">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nazad"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:id="@+id/nazadDugme"/>
+    </LinearLayout>
+
 </RelativeLayout>

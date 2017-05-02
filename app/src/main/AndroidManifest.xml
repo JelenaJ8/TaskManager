@@ -15,8 +15,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NoviZadatak" />
-        <activity android:name=".Statistika"></activity>
+        <activity android:name=".NoviZadatak"/>
+        <activity android:name=".Statistika" android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
