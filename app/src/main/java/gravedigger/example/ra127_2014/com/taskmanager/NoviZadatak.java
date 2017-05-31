@@ -24,6 +24,7 @@ import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,9 +46,10 @@ public class NoviZadatak extends AppCompatActivity {
     TimePicker timePicker;
     CheckBox podsetnik;
     public String TAG = "NoviZadatak";
-    String ime, opis, dugme, datum, vreme;
+    String ime, opis, dugme, datum, vreme, time_now;
     boolean checked = false;
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+    SimpleDateFormat sdf_time = new SimpleDateFormat("HH:mm");
     Calendar calendar = Calendar.getInstance();
 
     @Override
@@ -201,8 +203,6 @@ public class NoviZadatak extends AppCompatActivity {
                     Log.d(TAG, "onClick: usao");
                     ime = imeZadatka.getText().toString().trim();
                     opis = opisZadatka.getText().toString().trim();
-                    if(podsetnik.isChecked())
-                        checked = true;
                     if(crvenoDugme.isSelected()){
                         dugme = "RED";
                     }else if(zutoDugme.isSelected()){
@@ -215,6 +215,19 @@ public class NoviZadatak extends AppCompatActivity {
                     int min = timePicker.getCurrentMinute();
                     int hour = timePicker.getCurrentHour();
                     vreme = String.format("%02d:%02d", hour, min);
+                    time_now = sdf_time.format(calendar.getTime());
+                    int hour_now = Integer.parseInt(time_now.substring(0, 2));
+                    int min_now = Integer.parseInt(time_now.substring(3, 5));
+                    int millisec_now = hour_now * 60 * 60 * 1000 + min_now * 60 * 1000;
+                    int millisec_task = hour * 60 * 60 * 1000 + min * 60 * 1000;
+                    if(podsetnik.isChecked()) {
+                        if(millisec_task - millisec_now < 14 * 60 * 1000) {
+                            checked = false;
+                            Toast.makeText(getApplication().getBaseContext(), "Ne moze podsetnik, vreme isticanja zadatka je manje od 15 minuta!", Toast.LENGTH_LONG).show();
+                        }
+                        else
+                            checked = true;
+                    }
                     in1.putExtra("ime", ime);
                     in1.putExtra("opis", opis);
                     in1.putExtra("checkBox", checked);

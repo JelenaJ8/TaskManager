@@ -30,16 +30,8 @@ public class Zadatak implements Serializable {
         return ime;
     }
 
-    public void setIme(String ime) {
-        this.ime = ime;
-    }
-
     public String getOpis() {
         return opis;
-    }
-
-    public void setOpis(String opis) {
-        this.opis = opis;
     }
 
     public boolean isPodsetnik() {
@@ -54,23 +46,11 @@ public class Zadatak implements Serializable {
         return vaznost;
     }
 
-    public void setVaznost(String vaznost) {
-        this.vaznost = vaznost;
-    }
-
     public String getDatum() {
         return datum;
     }
 
-    public void setDatum(String datum) {
-        this.datum = datum;
-    }
-
     public String getVreme() {
         return vreme;
-    }
-
-    public void setVreme(String vreme) {
-        this.vreme = vreme;
     }
 }

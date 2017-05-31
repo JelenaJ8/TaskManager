@@ -54,6 +54,10 @@ public class MojAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public ArrayList<Zadatak> getZadaci(){
+        return zadaci;
+    }
+
     public void removeZadatak(Zadatak zadatak){
         Log.d(TAG, "removeZadatak: usao");
         zadaci.remove(zadatak);
