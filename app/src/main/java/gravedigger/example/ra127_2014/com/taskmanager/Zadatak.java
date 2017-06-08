@@ -16,14 +16,45 @@ public class Zadatak implements Serializable {
     private String vaznost;
     private String datum;
     private String vreme;
+    private boolean zavrsen;
+    private int id;
 
-    public Zadatak(String ime, String opis, boolean podsetnik, String vaznost, String datum, String vreme) {
+    public Zadatak(String ime, String opis, boolean podsetnik, String vaznost, String datum, String vreme, boolean zavrsen, int id) {
         this.ime = ime;
         this.opis = opis;
         this.podsetnik = podsetnik;
         this.vaznost = vaznost;
         this.datum = datum;
         this.vreme = vreme;
+        this.zavrsen = zavrsen;
+        this.id = id;
+    }
+
+    public Zadatak() {
+        this.ime = "";
+        this.opis = "";
+        this.podsetnik = false;
+        this.vaznost = "";
+        this.datum = "";
+        this.vreme = "";
+        this.zavrsen = false;
+        this.id = 0;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isZavrsen() {
+        return zavrsen;
+    }
+
+    public void setZavrsen(boolean zavrsen) {
+        this.zavrsen = zavrsen;
     }
 
     public String getIme() {
@@ -52,5 +83,25 @@ public class Zadatak implements Serializable {
 
     public String getVreme() {
         return vreme;
+    }
+
+    public void setIme(String ime) {
+        this.ime = ime;
+    }
+
+    public void setOpis(String opis) {
+        this.opis = opis;
+    }
+
+    public void setVaznost(String vaznost) {
+        this.vaznost = vaznost;
+    }
+
+    public void setDatum(String datum) {
+        this.datum = datum;
+    }
+
+    public void setVreme(String vreme) {
+        this.vreme = vreme;
     }
 }

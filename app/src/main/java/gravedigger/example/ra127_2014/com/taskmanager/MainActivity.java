@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -25,19 +26,23 @@ public class MainActivity extends AppCompatActivity {
 
     public String TAG = "MainActivity";
     Button noviZadatak, statistika, sacuvaj, obrisi;
-    String imeZadatka, opisZadatka, dugmeVaznosti, datum, vreme;
-    boolean checkBox = false;
     ListView lista;
-    MojAdapter adapter = new MojAdapter(this);
+    MojAdapter adapter;
     Intent in1, in2, in3;
     boolean bound = false;
     TaskService taskService;
+    TaskDatabase tdb;
+    int id_inc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: Usao");
+
+        adapter = new MojAdapter(this);
+        tdb = new TaskDatabase(this);
+        //tdb.deleteAll();
 
         noviZadatak = (Button) findViewById(R.id.b1);
         statistika = (Button) findViewById(R.id.b2);
@@ -57,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemLongClick: usao");
                 in3 = new Intent(MainActivity.this, NoviZadatak.class);
-                Zadatak zadatak = (Zadatak) lista.getItemAtPosition(position);
-                in3.putExtra("azuriranje", zadatak);
-                startActivityForResult(in3, 1);
+                Log.d(TAG, "onItemLongClick: " + position);
+                in3.putExtra("id", position);
+                startActivity(in3);
                 return true;
             }
         });
@@ -67,36 +72,37 @@ public class MainActivity extends AppCompatActivity {
         noviZadatak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(in1, 1);
+                in1.putExtra("id", -1);
+                Zadatak[] zadaci = tdb.readTasks();
+                if(zadaci == null){
+                    id_inc = 0;
+                } else {
+                    for (Zadatak z : zadaci){
+                        id_inc = z.getId();
+                        Log.d(TAG, "id " + z.getId());
+                    }
+                }
+                Log.d(TAG, "id_inc " + id_inc);
+                in1.putExtra("id_inc", id_inc);
+                startActivity(in1);
             }
         });
 
         statistika.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(in2, 1);
+                startActivity(in2);
             }
         });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: usao");
-        if(requestCode == 1){
-            if(resultCode == RESULT_OK) {
-                imeZadatka = data.getStringExtra("ime");
-                opisZadatka = data.getStringExtra("opis");
-                checkBox = data.getBooleanExtra("checkBox", false);
-                dugmeVaznosti = data.getStringExtra("vaznost");
-                datum = data.getStringExtra("datum");
-                vreme = data.getStringExtra("vreme");
+    protected void onPostResume() {
+        super.onPostResume();
+        Log.d(TAG, "onPostResume: usao");
 
-                in1 = new Intent(MainActivity.this, NoviZadatak.class);
-
-                adapter.addZadatak(new Zadatak(imeZadatka, opisZadatka, checkBox, dugmeVaznosti, datum, vreme));
-            }
-        }
+        Zadatak[] zadaci = tdb.readTasks();
+        adapter.update(zadaci);
     }
 
     @Override

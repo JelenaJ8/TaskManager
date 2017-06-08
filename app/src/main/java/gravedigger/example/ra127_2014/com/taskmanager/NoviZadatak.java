@@ -47,10 +47,12 @@ public class NoviZadatak extends AppCompatActivity {
     CheckBox podsetnik;
     public String TAG = "NoviZadatak";
     String ime, opis, dugme, datum, vreme, time_now;
-    boolean checked = false;
+    boolean checked = false, zavrsen = false;
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     SimpleDateFormat sdf_time = new SimpleDateFormat("HH:mm");
     Calendar calendar = Calendar.getInstance();
+    TaskDatabase tdb;
+    int id, id_inc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +76,13 @@ public class NoviZadatak extends AppCompatActivity {
 
         in1 = getIntent();
 
-        if(in1.hasExtra("azuriranje")){
-            Zadatak zadatak = (Zadatak) in1.getSerializableExtra("azuriranje");
+        tdb = new TaskDatabase(NoviZadatak.this);
+
+        id = in1.getIntExtra("id", -1);
+
+        if(id != -1){
+            Zadatak zadatak = tdb.readTask(id);
+            Log.d(TAG, "id " + id);
 
             dodajDugme.setText(R.string.sacuvaj_dugme);
             otkaziDugme.setText(R.string.obrisi_dugme);
@@ -191,51 +198,125 @@ public class NoviZadatak extends AppCompatActivity {
         dodajDugme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imeZadatka.getText().toString().trim().equals("")){
-                    imeZadatka.setError("Ime zadatka je obavezno!");
-                }else if(opisZadatka.getText().toString().trim().equals("")){
-                    opisZadatka.setError("Opis zadatka je obavezan!");
-                }else if(!crvenoDugme.isSelected() && !zutoDugme.isSelected() && !zelenoDugme.isSelected()){
-                    crvenoDugme.setError("Važnost je obavezna!");
-                    zutoDugme.setError("Važnost je obavezna!");
-                    zelenoDugme.setError("Važnost je obavezna!");
-                }else{
-                    Log.d(TAG, "onClick: usao");
-                    ime = imeZadatka.getText().toString().trim();
-                    opis = opisZadatka.getText().toString().trim();
-                    if(crvenoDugme.isSelected()){
-                        dugme = "RED";
-                    }else if(zutoDugme.isSelected()){
-                        dugme = "YELLOW";
-                    }else{
-                        dugme = "GREEN";
-                    }
-                    Date date = new Date(datePicker.getYear() - 1900, datePicker.getMonth(), datePicker.getDayOfMonth());
-                    datum = sdf.format(date);
-                    int min = timePicker.getCurrentMinute();
-                    int hour = timePicker.getCurrentHour();
-                    vreme = String.format("%02d:%02d", hour, min);
-                    time_now = sdf_time.format(calendar.getTime());
-                    int hour_now = Integer.parseInt(time_now.substring(0, 2));
-                    int min_now = Integer.parseInt(time_now.substring(3, 5));
-                    int millisec_now = hour_now * 60 * 60 * 1000 + min_now * 60 * 1000;
-                    int millisec_task = hour * 60 * 60 * 1000 + min * 60 * 1000;
-                    if(podsetnik.isChecked()) {
-                        if(millisec_task - millisec_now < 14 * 60 * 1000) {
-                            checked = false;
-                            Toast.makeText(getApplication().getBaseContext(), "Ne moze podsetnik, vreme isticanja zadatka je manje od 15 minuta!", Toast.LENGTH_LONG).show();
+                if(id != -1) {
+                    Zadatak zadatak = tdb.readTask(id);
+                    Log.d(TAG, "id " + id);
+
+                    if (imeZadatka.getText().toString().trim().equals("")) {
+                        imeZadatka.setError("Ime zadatka je obavezno!");
+                    } else if (opisZadatka.getText().toString().trim().equals("")) {
+                        opisZadatka.setError("Opis zadatka je obavezan!");
+                    } else if (!crvenoDugme.isSelected() && !zutoDugme.isSelected() && !zelenoDugme.isSelected()) {
+                        crvenoDugme.setError("Važnost je obavezna!");
+                        zutoDugme.setError("Važnost je obavezna!");
+                        zelenoDugme.setError("Važnost je obavezna!");
+                    } else {
+                        Log.d(TAG, "update: usao");
+                        zadatak.setIme(imeZadatka.getText().toString().trim());
+                        zadatak.setOpis(opisZadatka.getText().toString().trim());
+                        if (crvenoDugme.isSelected()) {
+                            zadatak.setVaznost("RED");
+                        } else if (zutoDugme.isSelected()) {
+                            zadatak.setVaznost("YELLOW");
+                        } else {
+                            zadatak.setVaznost("GREEN");
                         }
-                        else
-                            checked = true;
+                        Date date = new Date(datePicker.getYear() - 1900, datePicker.getMonth(), datePicker.getDayOfMonth());
+                        zadatak.setDatum(sdf.format(date));
+                        int min = timePicker.getCurrentMinute();
+                        int hour = timePicker.getCurrentHour();
+                        zadatak.setVreme(String.format("%02d:%02d", hour, min));
+                        time_now = sdf_time.format(calendar.getTime());
+                        int hour_now = Integer.parseInt(time_now.substring(0, 2));
+                        int min_now = Integer.parseInt(time_now.substring(3, 5));
+                        int millisec_now = hour_now * 60 * 60 * 1000 + min_now * 60 * 1000;
+                        int millisec_task = hour * 60 * 60 * 1000 + min * 60 * 1000;
+                        Calendar calendar = Calendar.getInstance();
+                        int godina = calendar.get(Calendar.YEAR);
+                        int mesec = calendar.get(Calendar.MONTH) + 1;
+                        int dan = calendar.get(Calendar.DAY_OF_MONTH);
+                        String date_now = String.format("%02d.%02d.", dan, mesec) + godina;
+                        if (podsetnik.isChecked()) {
+                            if(zadatak.getDatum().equals(date_now)) {
+                                if (millisec_task - millisec_now < 14 * 60 * 1000) {
+                                    zadatak.setPodsetnik(false);
+                                    Toast.makeText(getApplication().getBaseContext(), "Ne moze podsetnik, vreme isticanja zadatka je manje od 15 minuta!", Toast.LENGTH_LONG).show();
+                                } else {
+                                    zadatak.setPodsetnik(true);
+                                }
+                            } else {
+                                zadatak.setPodsetnik(true);
+                            }
+                        } else {
+                            zadatak.setPodsetnik(false);
+                        }
+                        tdb.updateTask(zadatak, id);
+                        Toast.makeText(NoviZadatak.this, "Zadatak " + zadatak.getIme() + " ažuriran!", Toast.LENGTH_LONG).show();
+                        in1 = new Intent(NoviZadatak.this, MainActivity.class);
+                        startActivity(in1);
                     }
-                    in1.putExtra("ime", ime);
-                    in1.putExtra("opis", opis);
-                    in1.putExtra("checkBox", checked);
-                    in1.putExtra("vaznost", dugme);
-                    in1.putExtra("datum", datum);
-                    in1.putExtra("vreme", vreme);
-                    setResult(RESULT_OK, in1);
-                    finish();
+                } else {
+                    Zadatak zadatak = new Zadatak();
+                    if (imeZadatka.getText().toString().trim().equals("")) {
+                        imeZadatka.setError("Ime zadatka je obavezno!");
+                    } else if (opisZadatka.getText().toString().trim().equals("")) {
+                        opisZadatka.setError("Opis zadatka je obavezan!");
+                    } else if (!crvenoDugme.isSelected() && !zutoDugme.isSelected() && !zelenoDugme.isSelected()) {
+                        crvenoDugme.setError("Važnost je obavezna!");
+                        zutoDugme.setError("Važnost je obavezna!");
+                        zelenoDugme.setError("Važnost je obavezna!");
+                    } else {
+                        Log.d(TAG, "onClick: usao");
+                        zadatak.setIme(imeZadatka.getText().toString().trim());
+                        zadatak.setOpis(opisZadatka.getText().toString().trim());
+                        if (crvenoDugme.isSelected()) {
+                            zadatak.setVaznost("RED");
+                        } else if (zutoDugme.isSelected()) {
+                            zadatak.setVaznost("YELLOW");
+                        } else {
+                            zadatak.setVaznost("GREEN");
+                        }
+                        Date date = new Date(datePicker.getYear() - 1900, datePicker.getMonth(), datePicker.getDayOfMonth());
+                        zadatak.setDatum(sdf.format(date));
+                        int min = timePicker.getCurrentMinute();
+                        int hour = timePicker.getCurrentHour();
+                        zadatak.setVreme(String.format("%02d:%02d", hour, min));
+                        time_now = sdf_time.format(calendar.getTime());
+                        int hour_now = Integer.parseInt(time_now.substring(0, 2));
+                        int min_now = Integer.parseInt(time_now.substring(3, 5));
+                        int millisec_now = hour_now * 60 * 60 * 1000 + min_now * 60 * 1000;
+                        int millisec_task = hour * 60 * 60 * 1000 + min * 60 * 1000;
+                        Calendar calendar = Calendar.getInstance();
+                        int godina = calendar.get(Calendar.YEAR);
+                        int mesec = calendar.get(Calendar.MONTH) + 1;
+                        int dan = calendar.get(Calendar.DAY_OF_MONTH);
+                        String date_now = String.format("%02d.%02d.", dan, mesec) + godina;
+                        if (podsetnik.isChecked()) {
+                            if(zadatak.getDatum().equals(date_now)) {
+                                if (millisec_task - millisec_now < 14 * 60 * 1000) {
+                                    zadatak.setPodsetnik(false);
+                                    Toast.makeText(getApplication().getBaseContext(), "Ne moze podsetnik, vreme isticanja zadatka je manje od 15 minuta!", Toast.LENGTH_LONG).show();
+                                } else
+                                    zadatak.setPodsetnik(true);
+                            } else {
+                                zadatak.setPodsetnik(true);
+                            }
+                        }else {
+                            zadatak.setPodsetnik(false);
+                        }
+                        id_inc = in1.getIntExtra("id_inc", -1);
+                        Log.d(TAG, "pre inkrementa " + id_inc);
+                        id_inc++;
+                        zadatak.setId(id_inc);
+                        Log.d(TAG, "inc" + id_inc);
+                        boolean isInserted = tdb.insertData(zadatak);
+                        if (isInserted)
+                            Toast.makeText(NoviZadatak.this, "Zadatak " + zadatak.getIme() + " dodat!", Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(NoviZadatak.this, "Zadatak nije dodat!", Toast.LENGTH_LONG).show();
+                        in1 = new Intent(NoviZadatak.this, MainActivity.class);
+                        startActivity(in1);
+                    }
                 }
             }
         });
@@ -243,8 +324,17 @@ public class NoviZadatak extends AppCompatActivity {
         otkaziDugme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(2);
-                finish();
+                if(id != -1) {
+                    Log.d(TAG, "id " + id);
+                    Zadatak zadatak = tdb.readTask(id);
+                    tdb.deleteTask(id);
+                    Toast.makeText(NoviZadatak.this, "Zadatak " + zadatak.getIme() + " obrisan!", Toast.LENGTH_LONG).show();
+                    in1 = new Intent(NoviZadatak.this, MainActivity.class);
+                    startActivity(in1);
+                } else {
+                    in1 = new Intent(NoviZadatak.this, MainActivity.class);
+                    startActivity(in1);
+                }
             }
         });
 

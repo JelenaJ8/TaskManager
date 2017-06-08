@@ -47,21 +47,20 @@ public class MojAdapter extends BaseAdapter {
     int danUnedelji = calendar.get(Calendar.DAY_OF_WEEK);
     String dateDanas, dateSutra, datePrekosutra, dateZa3Dana, dateZa4Dana, dateZa5Dana, dateZa6Dana, dateZa7Dana;
     int sutra, prekosutra, za3dana, za4dana, za5dana, za6dana, za7dana;
+    TaskDatabase tdb;
 
-    public void addZadatak(Zadatak zadatak){
-        Log.d(TAG, "addZadatak: usao");
-        zadaci.add(zadatak);
+    public void update(Zadatak[] z){
+        zadaci.clear();
+        if(z != null){
+            for(Zadatak zadatak : z){
+                zadaci.add(zadatak);
+            }
+        }
         notifyDataSetChanged();
     }
 
     public ArrayList<Zadatak> getZadaci(){
         return zadaci;
-    }
-
-    public void removeZadatak(Zadatak zadatak){
-        Log.d(TAG, "removeZadatak: usao");
-        zadaci.remove(zadatak);
-        notifyDataSetChanged();
     }
 
     public MojAdapter(Context context){
@@ -91,7 +90,7 @@ public class MojAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         Log.d(TAG, "getView: usao");
         View view = convertView;
@@ -109,7 +108,8 @@ public class MojAdapter extends BaseAdapter {
             view.setTag(holder);
         }
 
-        Zadatak zadaci = (Zadatak) getItem(position);
+        tdb = new TaskDatabase(mContext);
+        final Zadatak zadaci = tdb.readTask(position);
         final ViewHolder holder = (ViewHolder) (view.getTag());
         switch (zadaci.getVaznost()) {
             case "RED":
@@ -129,16 +129,35 @@ public class MojAdapter extends BaseAdapter {
             holder.podsetnik.setChecked(true);
         }
 
+        holder.uradjen.setChecked(zadaci.isZavrsen());
         holder.uradjen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(holder.uradjen.isChecked()){
                     holder.imeZadatka.setPaintFlags(holder.imeZadatka.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    zadaci.setZavrsen(true);
+                    tdb = new TaskDatabase(mContext);
+                    tdb.getWritableDatabase();
+                    tdb.updateTask(zadaci, position);
+                    Log.d(TAG, "zavrsen");
                 } else {
                     holder.imeZadatka.setPaintFlags(holder.imeZadatka.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+                    zadaci.setZavrsen(false);
+                    tdb = new TaskDatabase(mContext);
+                    tdb.getWritableDatabase();
+                    tdb.updateTask(zadaci, position);
+                    Log.d(TAG, "nije zavrsen");
                 }
             }
         });
+
+        if (zadaci.isZavrsen()){
+            holder.imeZadatka.setPaintFlags(holder.imeZadatka.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+        else
+        {
+            holder.imeZadatka.setPaintFlags(0);
+        }
 
         if(mesec == Calendar.JANUARY || mesec == Calendar.MARCH || mesec == Calendar.MAY || mesec == Calendar.JULY
                 || mesec == Calendar.AUGUST || mesec == Calendar.OCTOBER || mesec == Calendar.DECEMBER){
